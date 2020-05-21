@@ -1,0 +1,5 @@
+# dependencies
+node_modules/
+connection.js
+server.js
+models/collection.js
