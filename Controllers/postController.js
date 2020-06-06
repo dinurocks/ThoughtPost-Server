@@ -1,13 +1,27 @@
 var { Post } = require("../models/reactAppTwitterCollection");
 var { Register } = require("../models/collectionRegistration");
+var { postImages } = require("../models/postImageCollection");
 
 module.exports.saveUserPost = (req, res) => {
+  // http://localhost:3003/static/
+  console.log("file", req.file);
+  // const obj = JSON.parse(JSON.stringify(req.body));
+  console.log("body", req.body);
+  if (req.file) {
+    // var newn = "http://localhost:3003/static/" + req.file.originalname;
+  }
+
   Register.findOne({ _id: req.body.id })
     .then((userreg) => {
       var post = new Post({
         user: userreg.name,
         userId: req.body.id,
+
         post: req.body.post,
+
+        // postImage: req.file ? newn : null,
+        postImage: req.file ? req.file.filename : null,
+
         time: new Date(),
         likeCount: 0,
       });
@@ -18,11 +32,12 @@ module.exports.saveUserPost = (req, res) => {
           res.status(200).send(result);
         })
         .catch((err) => {
+          console.log(err);
           res.status(400).send(err);
         });
     })
     .catch((err) => {
-      console.log(res);
+      console.log(err);
       res.status(400).send(err);
     });
 };
@@ -78,6 +93,17 @@ module.exports.updatePostUserName = (req, res) => {
       user: req.query.name,
     }
   )
+    .then((result) => {
+      res.status(200).send(result);
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    });
+};
+
+module.exports.getPostImages = (req, res) => {
+  postImages
+    .find({})
     .then((result) => {
       res.status(200).send(result);
     })

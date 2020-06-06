@@ -21,14 +21,15 @@ app.use((req, res, next) => {
   );
 
   res.setHeader("Access-Control-Expose-Headers", "auth");
+
   next();
 });
-// CORS
-app.use("/", postRoute);
-// app.use(myMiddlewares.auth);
 
-// axios.get("http://localhost:3003/getSomething", {params: {}})
-// axios.post("http://localhost:3003/postSomething", {}).then().catch()
+app.use("/static", express.static(__dirname + "/images"));
+
+// app.use(express.static("images"));
+
+app.use("/", postRoute);
 
 app.post("/postSomething", (req, res) => {
   var data = new Register({
@@ -93,7 +94,7 @@ app.put("/loginCheck", (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.status(400).send("Find One Error");
+      res.status(400).send("Could not find mobile/password");
     });
 });
 
@@ -236,9 +237,27 @@ app.get("/updateUserFollowingName", (req, res) => {
       },
     }
   )
-
     .then((result) => {
       console.log("updated following");
+      res.status(200).send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(400).send(err);
+    });
+});
+
+app.get("/updateUserSharedName", (req, res) => {
+  Register.updateMany(
+    { "sharedPosts.userId": req.query.id },
+    {
+      $set: {
+        "sharedPosts.$.userName": req.query.name,
+      },
+    }
+  )
+    .then((result) => {
+      console.log("updated shared name");
       res.status(200).send(result);
     })
     .catch((err) => {

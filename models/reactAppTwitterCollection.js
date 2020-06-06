@@ -3,6 +3,7 @@ schema = mongoose.Schema({
   user: { type: String },
   userId: { type: String },
   post: { type: String },
+  postImage: { type: String },
   time: { type: String },
   likes: [
     {
